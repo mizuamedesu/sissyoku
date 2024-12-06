@@ -11,7 +11,8 @@ user:こんな感じのアニプレみたいなモダンでおしゃれでアニ
 ```
 
 ```
-o1:<!DOCTYPE html>
+o1:
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
