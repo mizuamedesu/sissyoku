@@ -1,4 +1,4 @@
-# sissyoku
+# 失職検証
 
 ChatGPT o1のテスト
 
