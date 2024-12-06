@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>永に続く “えしこと” を</title>
+<style>
+  /* ベースリセット */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #f8f8f8;
+    color: #333;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ヘッダー */
+  header {
+    position: fixed;
+    top:0; left:0; right:0;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 1.5rem;
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(8px);
+    z-index:9999;
+    transition: background 0.3s;
+  }
+
+  header:hover {
+    background:rgba(255,255,255,1);
+  }
+
+  /* ロゴテキスト */
+  .logo-text {
+    font-size:1.2rem;
+    font-weight:700;
+    letter-spacing:0.05em;
+  }
+
+  /* バーガーメニュー */
+  .burger {
+    width:24px;
+    height:24px;
+    position:relative;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .burger span {
+    display:block;
+    height:2px;
+    background:#333;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  .burger.open span:nth-child(1) {
+    transform:translateY(10px) rotate(45deg);
+  }
+  .burger.open span:nth-child(2) {
+    opacity:0;
+  }
+  .burger.open span:nth-child(3) {
+    transform:translateY(-10px) rotate(-45deg);
+  }
+
+  /* ナビゲーションメニュー（サイドスライド） */
+  nav {
+    position: fixed;
+    top:60px; 
+    right:-250px;
+    width:250px;
+    height:calc(100% - 60px);
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:1.5rem;
+    padding:2rem 1rem;
+    border-left:1px solid #eee;
+    box-shadow:-2px 0 10px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
+    z-index:9998;
+  }
+
+  nav.active {
+    right:0;
+  }
+
+  nav a {
+    font-size:1rem;
+    font-weight:500;
+    padding:0.5rem 1rem;
+    transition:color 0.2s;
+    width:100%;
+    text-align:center;
+  }
+
+  nav a:hover {
+    color:#666;
+  }
+
+  /* ヒーローセクション */
+  .section-hero {
+    position:relative;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    color:#fff;
+  }
+
+  .hero-bg {
+    position:absolute;
+    top:0; left:0; width:100%; height:150%;
+    background:url('https://picsum.photos/id/1018/1920/1280') center/cover no-repeat;
+    transform:translateY(-10%);
+    will-change:transform;
+  }
+
+  .hero-content {
+    position:relative;
+    z-index:1;
+    margin-bottom:10vh;
+    text-align:center;
+    font-size:2rem;
+    font-weight:700;
+    line-height:1.3;
+    backdrop-filter:blur(5px);
+    background:rgba(0,0,0,0.3);
+    padding:1rem 2rem;
+    border-radius:5px;
+  }
+
+  .hero-content span {
+    font-size:1.2rem;
+    display:block;
+    margin-top:1rem;
+    font-weight:400;
+  }
+
+  /* リング状ロゴ */
+  .logo-ring-container {
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    perspective:1000px;
+    width:200px; height:200px;
+  }
+  .logo-ring {
+    position:absolute;
+    width:200px; height:200px;
+    transform-style:preserve-3d;
+    animation:rotateRing 10s linear infinite;
+  }
+  @keyframes rotateRing {
+    0% {transform:rotateX(0deg) rotateY(0deg);}
+    100% {transform:rotateX(360deg) rotateY(360deg);}
+  }
+  .logo-ring .text {
+    position:absolute;
+    width:200px; height:200px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:1.2rem; font-weight:700;
+    transform-origin:center center -100px;
+  }
+  .logo-ring .text:nth-child(1) {transform:rotateY(0deg);}
+  .logo-ring .text:nth-child(2) {transform:rotateY(90deg);}
+  .logo-ring .text:nth-child(3) {transform:rotateY(180deg);}
+  .logo-ring .text:nth-child(4) {transform:rotateY(270deg);}
+
+  /* セクション共通 */
+  section {
+    padding:4rem 1.5rem;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  .section-title {
+    font-size:1.8rem;
+    margin-bottom:2rem;
+    font-weight:700;
+    position:relative;
+  }
+
+  .section-title::after {
+    content:"";
+    position:absolute;
+    left:0; bottom:-5px;
+    width:50px;
+    height:2px;
+    background:#333;
+  }
+
+  /* コンテンツセクション1 */
+  .two-column {
+    display:flex;
+    flex-wrap:wrap;
+    gap:2rem;
+    align-items:flex-start;
+  }
+  .two-column .text-col, .two-column .img-col {
+    flex:1;
+    min-width:280px;
+  }
+  .two-column .img-col img {
+    width:100%;
+    border-radius:8px;
+    display:block;
+  }
+
+  .fade-in {
+    opacity:0; transform:translateY(20px);
+    transition:1s;
+  }
+  .fade-in.visible {
+    opacity:1; transform:translateY(0);
+  }
+
+  /* パララックスセクション(背景画像付き) */
+  .section-parallax {
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    text-align:center;
+    overflow:hidden;
+  }
+
+  .section-parallax .bg {
+    position:absolute;
+    top:0; left:0; width:100%; height:150%;
+    background:url('https://picsum.photos/id/1019/1920/1080') center/cover no-repeat;
+    transform:translateY(-10%);
+    will-change:transform;
+    z-index:-1;
+  }
+
+  .section-parallax .content {
+    z-index:1;
+    backdrop-filter:blur(5px);
+    background:rgba(0,0,0,0.3);
+    padding:2rem;
+    border-radius:5px;
+  }
+
+  /* ギャラリー */
+  .gallery {
+    display:flex;
+    flex-wrap:wrap;
+    gap:1rem;
+  }
+  .gallery img {
+    width:calc(33.333% - 1rem);
+    border-radius:5px;
+    object-fit:cover;
+    height:200px;
+    transition: transform 0.3s;
+  }
+  .gallery img:hover {
+    transform:scale(1.05);
+  }
+
+  /* ボタン */
+  .btn {
+    display:inline-block;
+    background:#333;
+    color:#fff;
+    padding:0.5rem 1rem;
+    border-radius:20px;
+    margin-top:1rem;
+    transition:background 0.3s;
+    font-size:0.9rem;
+  }
+  .btn:hover {
+    background:#555;
+  }
+
+  /* フッター */
+  footer {
+    background:#fff;
+    text-align:center;
+    padding:2rem;
+    font-size:0.8rem;
+    color:#777;
+    border-top:1px solid #eee;
+  }
+
+  /* レスポンシブ */
+  @media(max-width:768px) {
+    .two-column {
+      flex-direction:column;
+    }
+    .gallery img {
+      width:calc(50% - 1rem);
+      height:150px;
+    }
+  }
+
+  @media(max-width:500px) {
+    .gallery img {
+      width:100%;
+      height:auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-text">ESHIKOTO</div>
+  <div class="burger" id="burger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</header>
+
+<nav id="nav">
+  <a href="#hero">トップ</a>
+  <a href="#about">えしこととは</a>
+  <a href="#gallery">ギャラリー</a>
+  <a href="#visit">訪れる</a>
+  <a href="#contact">お問い合わせ</a>
+</nav>
+
+<!-- ヒーローセクション -->
+<div class="section-hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    ( ご挨拶 )<br>永に続く “えしこと” を。
+    <span>お酒を核に、福井と北陸の文化を伝える場所</span>
+  </div>
+  <div class="logo-ring-container">
+    <div class="logo-ring">
+      <div class="text">ESHIKOTO</div>
+      <div class="text">ESHIKOTO</div>
+      <div class="text">ESHIKOTO</div>
+      <div class="text">ESHIKOTO</div>
+    </div>
+  </div>
+</div>
+
+<!-- コンテンツセクション -->
+<section id="about">
+  <h2 class="section-title">えしこととは</h2>
+  <div class="two-column">
+    <div class="text-col fade-in">
+      <p>
+        「ESHIKOTO」は、日本酒を造り続けている黒龍酒造を擁する石田屋二左衛門が創造したブランドであり、<br>
+        お酒を核に福井と北陸の文化を伝える拠点の名称です。<br><br>
+        この地で生まれる酒は、豊かな自然と人々の技術、伝統が紡ぎ出す「えしこと」——<br>
+        永続する価値あるもの、語り継がれる営みを示しています。<br><br>
+        ここでは季節毎に変わる風景に寄り添う酒、その味わいに溶け込む土地の物語、<br>
+        そして訪れる人々が生む新たな記憶が交錯し、<br>
+        新旧の文化が静かに呼吸しています。
+      </p>
+      <a href="#visit" class="btn">訪れる</a>
+    </div>
+    <div class="img-col fade-in">
+      <img src="https://picsum.photos/id/1040/600/400" alt="日本酒と風景">
+    </div>
+  </div>
+</section>
+
+<!-- パララックスセクション -->
+<section class="section-parallax" id="visit">
+  <div class="bg"></div>
+  <div class="content fade-in">
+    <h2 class="section-title" style="color:#fff;">訪れる</h2>
+    <p>
+      ESHIKOTOへの訪問は、単なる観光ではなく、<br>
+      時間を超えた文化との出会いです。<br><br>
+      福井の地酒、四季折々の自然、そして人々が育んだ風土を<br>
+      五感で味わうひととき。<br><br>
+      建物内部には、ギャラリーや試飲スペース、<br>
+      工芸品の展示があり、<br>
+      大切な人へのお土産を選ぶひとときも楽しめます。
+    </p>
+    <a href="#gallery" class="btn">ギャラリーへ</a>
+  </div>
+</section>
+
+<!-- ギャラリーセクション -->
+<section id="gallery">
+  <h2 class="section-title">ギャラリー</h2>
+  <p class="fade-in">
+    季節ごとの風景、醸造所の様子、<br>
+    地元の行事や酒造りの一コマなど、<br>
+    多彩な写真が生むストーリーをご覧ください。
+  </p>
+  <div class="gallery fade-in">
+    <img src="https://picsum.photos/id/1011/400/300" alt="イメージ1">
+    <img src="https://picsum.photos/id/1012/400/300" alt="イメージ2">
+    <img src="https://picsum.photos/id/1013/400/300" alt="イメージ3">
+    <img src="https://picsum.photos/id/1014/400/300" alt="イメージ4">
+    <img src="https://picsum.photos/id/1015/400/300" alt="イメージ5">
+    <img src="https://picsum.photos/id/1016/400/300" alt="イメージ6">
+  </div>
+</section>
+
+<!-- お問い合わせセクション -->
+<section id="contact">
+  <h2 class="section-title">お問い合わせ</h2>
+  <p class="fade-in">
+    ご質問やご予約など、お気軽にお問い合わせください。<br>
+    スタッフ一同、皆さまのお越しを心よりお待ちしております。<br><br>
+    <a href="#hero" class="btn">トップへ戻る</a>
+  </p>
+</section>
+
+<footer>
+  © 2024 ESHIKOTO. All Rights Reserved.
+</footer>
+
+<script>
+  // バーガーメニュー機能
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    nav.classList.toggle('active');
+  });
+
+  // フェードイン処理（Intersection Observer）
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    })
+  },{threshold:0.1});
+  fadeEls.forEach(el=>observer.observe(el));
+
+  // パララックス処理
+  window.addEventListener('scroll', function() {
+    const scrollY = window.scrollY;
+    const heroBg = document.querySelector('.hero-bg');
+    const parallaxBg = document.querySelector('.section-parallax .bg');
+    if (heroBg) {
+      heroBg.style.transform = `translateY(${scrollY * -0.3}px)`;
+    }
+    if (parallaxBg) {
+      const offset = parallaxBg.parentElement.offsetTop;
+      parallaxBg.style.transform = `translateY(${(scrollY - offset) * -0.3}px)`;
+    }
+  });
+</script>
+
+</body>
+</html>
