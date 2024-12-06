@@ -1,5 +1,8 @@
 # 失職検証
 
+[AI生成その1](https://mizuamedesu.github.io/sissyoku/index.html)
+[AI生成その2](https://mizuamedesu.github.io/sissyoku/anime.html)
+
 ChatGPT o1のテスト
 
 <img width="1159" alt="スクリーンショット 2024-12-06 11 34 06" src="https://github.com/user-attachments/assets/25a2123a-5ae5-4d4d-842d-04d839238f51">
